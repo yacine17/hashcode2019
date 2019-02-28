@@ -20,4 +20,10 @@ public class Photo {
                 ", id=" + id +
                 '}';
     }
+
+    public long intersactionCount(Photo photo) {
+        return this.tags.stream()
+                .filter(photo.tags::contains)
+                .count();
+    }
 }
