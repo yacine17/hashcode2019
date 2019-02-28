@@ -10,6 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         rawSet = readFile("a_example.txt");
+
     }
 
     public static Set<Photo> readFile(String file) {

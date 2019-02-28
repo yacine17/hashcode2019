@@ -21,9 +21,14 @@ public class Photo {
                 '}';
     }
 
+<<<<<<< HEAD
     public long intersactionCount(Photo photo) {
         return this.tags.stream()
                 .filter(photo.tags::contains)
                 .count();
     }
+=======
+
+
+>>>>>>> e73959645d17a2c149dbe664a244346d4642bdfc
 }
