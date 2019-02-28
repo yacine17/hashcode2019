@@ -1,16 +1,24 @@
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-    public static Set<Photo> rawSet;
 
     public static void main(String[] args) {
-        rawSet = readFile("a_example.txt");
+        Set<Photo> photos = readFile("a_example.txt");
+        List<Slide> slides = getSlides(photos);
+        System.out.println(slides);
+        Graph graph = new Graph(slides);
+        System.out.println("done");
+        graph.runAllPairsLongestPath();
 
+        for (Edge[] edges:graph.edges
+             ) {
+
+            System.out.println(Arrays.deepToString(edges));
+        }
     }
 
     public static Set<Photo> readFile(String file) {
@@ -26,11 +34,50 @@ public class Main {
         return null;
     }
 
-    public static Set<Photo> verticalPhotos() {
-        Set<Photo> verticals = rawSet.stream().filter(photo -> photo.isVertical)
-                .sorted(Comparator.comparingLong(Photo::intersactionCount))
-                .collect(Collectors.toSet());
+    public static List<Slide> processVerticals(Set<Photo> photos) {
+        List<Photo> verticals = photos
+                .stream()
+                .filter(photo -> photo.isVertical)
+                .collect(Collectors.toList());
 
-        verticals.stream()
+        List<V> list = new ArrayList<>();
+        for (int i = 0; i < verticals.size(); i++) {
+            Photo one = verticals.get(i);
+            for (int j = i + 1; j < verticals.size(); j++) {
+                Photo two = verticals.get(j);
+                list.add(new V(i, j, one.similarTags(two)));
+            }
+        }
+        Collections.sort(list);
+        return list.stream()
+                .map(v -> new Slide(verticals.get(v.i), verticals.get(v.j)))
+                .collect(Collectors.toList());
+    }
+
+    public static List<Slide> getSlides(Set<Photo> photos) {
+        List<Slide> slides = processVerticals(photos);
+        slides.addAll(photos.stream()
+                .filter(photo -> !photo.isVertical)
+                .map(Slide::new)
+                .collect(Collectors.toList()));
+
+        return slides;
+    }
+
+    static class V implements Comparable<V> {
+        int i;
+        int j;
+        long value;
+
+        public V(int i, int j, long value) {
+            this.i = i;
+            this.j = j;
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(V o) {
+            return Long.compare(value, o.value);
+        }
     }
 }
