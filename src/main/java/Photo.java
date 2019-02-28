@@ -20,4 +20,7 @@ public class Photo {
                 ", id=" + id +
                 '}';
     }
+
+
+
 }

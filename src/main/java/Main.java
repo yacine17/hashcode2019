@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 public class Main {
 
     public static void main(String[] args) {
-        readFile("a_example.txt");
+        System.out.println(readFile("e_shiny_selfies.txt").size());
     }
 
     public static Set<Photo> readFile(String file) {
